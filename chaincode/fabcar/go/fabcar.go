@@ -1,5 +1,3 @@
-
-
 package main
 
 import (
@@ -15,9 +13,9 @@ type SmartContract struct {
 	contractapi.Contract
 }
 
-// Car describes basic details of what makes up a car
-type Car struct {
-	Name   string `json:"name"`
+// Student describes basic details of what makes up a car
+type Student struct {
+	Name  string `json:"name"`
 	Year  string `json:"year"`
 	Board string `json:"board"`
 	Mark  string `json:"mark"`
@@ -26,27 +24,27 @@ type Car struct {
 // QueryResult structure used for handling result of query
 type QueryResult struct {
 	Key    string `json:"Key"`
-	Record *Car
+	Record *Student
 }
 
 // InitLedger adds a base set of cars to the ledger
 func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
-	cars := []Car{
-		Car{Name: "changed", Year: "2018", Board: "CBSE", Mark: "99"},
-		Car{Name: "jane", Year: "2017", Board: "ICSE", Mark: "92"},
-		Car{Name: "Tan", Year: "2018", Board: "CBSE", Mark: "85"},
-		Car{Name: "jon", Year: "2018", Board: "ICSE",Mark: "86"},
-		Car{Name: "Om", Year: "2018",Board: "CBSE",Mark: "89"},
-		Car{Name: "Vaish", Year: "2018",Board: "CBSE",Mark: "94"},
-		Car{Name: "Rut", Year: "2016", Board: "GSB",Mark: "93"},
-		Car{Name: "Rat", Year: "2015",Board: "CBSE",Mark: "84"},
-		Car{Name: "Vir", Year: "2018",Board: "MSB", Mark: "99"},
-		Car{Name: "Jo", Year: "2018",Board: "CBSE",Mark: "99"},
+	students := []Student{
+		{Name: "changed", Year: "2018", Board: "CBSE", Mark: "99"},
+		{Name: "jane", Year: "2017", Board: "ICSE", Mark: "92"},
+		{Name: "Tan", Year: "2018", Board: "CBSE", Mark: "85"},
+		{Name: "jon", Year: "2018", Board: "ICSE", Mark: "86"},
+		{Name: "Om", Year: "2018", Board: "CBSE", Mark: "89"},
+		{Name: "Vaish", Year: "2018", Board: "CBSE", Mark: "94"},
+		{Name: "Rut", Year: "2016", Board: "GSB", Mark: "93"},
+		{Name: "Rat", Year: "2015", Board: "CBSE", Mark: "84"},
+		{Name: "Vir", Year: "2018", Board: "MSB", Mark: "99"},
+		{Name: "Jo", Year: "2018", Board: "CBSE", Mark: "99"},
 	}
 
-	for i, car := range cars {
-		carAsBytes, _ := json.Marshal(car)
-		err := ctx.GetStub().PutState("Student"+strconv.Itoa(i), carAsBytes)
+	for i, student := range students {
+		studentAsBytes, _ := json.Marshal(student)
+		err := ctx.GetStub().PutState("Student"+strconv.Itoa(i), studentAsBytes)
 
 		if err != nil {
 			return fmt.Errorf("Failed to put to world state. %s", err.Error())
@@ -56,40 +54,40 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 	return nil
 }
 
-// CreateCar adds a new car to the world state with given details
-func (s *SmartContract) CreateCar(ctx contractapi.TransactionContextInterface, carNumber string, make string, model string, colour string, owner string) error {
-	car := Car{
-		Name:   make,
-		Year:  model,
-		Board: colour,
-		Mark:  owner,
+// CreateMarksheet adds a new car to the world state with given details
+func (s *SmartContract) CreateMarksheet(ctx contractapi.TransactionContextInterface, StudNumber string, name string, year string, board string, mark string) error {
+	car := Student{
+		Name:  name,
+		Year:  year,
+		Board: board,
+		Mark:  mark,
 	}
 
 	carAsBytes, _ := json.Marshal(car)
 
-	return ctx.GetStub().PutState(carNumber, carAsBytes)
+	return ctx.GetStub().PutState(StudNumber, carAsBytes)
 }
 
-// QueryCar returns the car stored in the world state with given id
-func (s *SmartContract) QueryCar(ctx contractapi.TransactionContextInterface, carNumber string) (*Car, error) {
-	carAsBytes, err := ctx.GetStub().GetState(carNumber)
+// QueryMarksheet returns the car stored in the world state with given id
+func (s *SmartContract) QueryMarksheet(ctx contractapi.TransactionContextInterface, studNumber string) (*Student, error) {
+	studAsBytes, err := ctx.GetStub().GetState(studNumber)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to read from world state. %s", err.Error())
 	}
 
-	if carAsBytes == nil {
-		return nil, fmt.Errorf("%s does not exist", carNumber)
+	if studAsBytes == nil {
+		return nil, fmt.Errorf("%s does not exist", studNumber)
 	}
 
-	car := new(Car)
-	_ = json.Unmarshal(carAsBytes, car)
+	car := new(Student)
+	_ = json.Unmarshal(studAsBytes, car)
 
 	return car, nil
 }
 
-// QueryAllCars returns all cars found in world state
-func (s *SmartContract) QueryAllCars(ctx contractapi.TransactionContextInterface) ([]QueryResult, error) {
+// QueryFullMarksheet returns all cars found in world state
+func (s *SmartContract) QueryFullMarksheet(ctx contractapi.TransactionContextInterface) ([]QueryResult, error) {
 	startKey := "Student0"
 	endKey := "Student99"
 
@@ -109,29 +107,29 @@ func (s *SmartContract) QueryAllCars(ctx contractapi.TransactionContextInterface
 			return nil, err
 		}
 
-		car := new(Car)
-		_ = json.Unmarshal(queryResponse.Value, car)
+		student := new(Student)
+		_ = json.Unmarshal(queryResponse.Value, student)
 
-		queryResult := QueryResult{Key: queryResponse.Key, Record: car}
+		queryResult := QueryResult{Key: queryResponse.Key, Record: student}
 		results = append(results, queryResult)
 	}
 
 	return results, nil
 }
 
-// ChangeCarOwner updates the owner field of car with given id in world state
-func (s *SmartContract) ChangeCarOwner(ctx contractapi.TransactionContextInterface, carNumber string, newOwner string) error {
-	car, err := s.QueryCar(ctx, carNumber)
+// ChangeStudentMarks updates the owner field of car with given id in world state
+func (s *SmartContract) ChangeStudentMarks(ctx contractapi.TransactionContextInterface, studNumber string, newMark string) error {
+	student, err := s.QueryMarksheet(ctx, studNumber)
 
 	if err != nil {
 		return err
 	}
 
-	car.Mark = newOwner
+	student.Mark = newMark
 
-	carAsBytes, _ := json.Marshal(car)
+	studAsBytes, _ := json.Marshal(student)
 
-	return ctx.GetStub().PutState(carNumber, carAsBytes)
+	return ctx.GetStub().PutState(studNumber, studAsBytes)
 }
 
 func main() {
