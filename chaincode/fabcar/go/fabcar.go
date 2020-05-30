@@ -1,6 +1,4 @@
-/*
-SPDX-License-Identifier: Apache-2.0
-*/
+
 
 package main
 
@@ -19,10 +17,10 @@ type SmartContract struct {
 
 // Car describes basic details of what makes up a car
 type Car struct {
-	Make   string `json:"make"`
-	Model  string `json:"model"`
-	Colour string `json:"colour"`
-	Owner  string `json:"owner"`
+	Name   string `json:"name"`
+	Year  string `json:"year"`
+	Board string `json:"board"`
+	Mark  string `json:"mark"`
 }
 
 // QueryResult structure used for handling result of query
@@ -34,21 +32,21 @@ type QueryResult struct {
 // InitLedger adds a base set of cars to the ledger
 func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
 	cars := []Car{
-		Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Tomoko"},
-		Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad"},
-		Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo"},
-		Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max"},
-		Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana"},
-		Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel"},
-		Car{Make: "Chery", Model: "S22L", Colour: "white", Owner: "Aarav"},
-		Car{Make: "Fiat", Model: "Punto", Colour: "violet", Owner: "Pari"},
-		Car{Make: "Tata", Model: "Nano", Colour: "indigo", Owner: "Valeria"},
-		Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro"},
+		Car{Name: "John", Year: "2018", Board: "CBSE", Mark: "99"},
+		Car{Name: "jane", Year: "2017", Board: "ICSE", Mark: "92"},
+		Car{Name: "Tan", Year: "2018", Board: "CBSE", Mark: "85"},
+		Car{Name: "jon", Year: "2018", Board: "ICSE",Mark: "86"},
+		Car{Name: "Om", Year: "2018",Board: "CBSE",Mark: "89"},
+		Car{Name: "Vaish", Year: "2018",Board: "CBSE",Mark: "94"},
+		Car{Name: "Rut", Year: "2016", Board: "GSB",Mark: "93"},
+		Car{Name: "Rat", Year: "2015",Board: "CBSE",Mark: "84"},
+		Car{Name: "Vir", Year: "2018",Board: "MSB", Mark: "99"},
+		Car{Name: "Jo", Year: "2018",Board: "CBSE",Mark: "99"},
 	}
 
 	for i, car := range cars {
 		carAsBytes, _ := json.Marshal(car)
-		err := ctx.GetStub().PutState("CAR"+strconv.Itoa(i), carAsBytes)
+		err := ctx.GetStub().PutState("Student"+strconv.Itoa(i), carAsBytes)
 
 		if err != nil {
 			return fmt.Errorf("Failed to put to world state. %s", err.Error())
@@ -61,10 +59,10 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 // CreateCar adds a new car to the world state with given details
 func (s *SmartContract) CreateCar(ctx contractapi.TransactionContextInterface, carNumber string, make string, model string, colour string, owner string) error {
 	car := Car{
-		Make:   make,
-		Model:  model,
-		Colour: colour,
-		Owner:  owner,
+		Name:   make,
+		Year:  model,
+		Board: colour,
+		Mark:  owner,
 	}
 
 	carAsBytes, _ := json.Marshal(car)
@@ -92,8 +90,8 @@ func (s *SmartContract) QueryCar(ctx contractapi.TransactionContextInterface, ca
 
 // QueryAllCars returns all cars found in world state
 func (s *SmartContract) QueryAllCars(ctx contractapi.TransactionContextInterface) ([]QueryResult, error) {
-	startKey := "CAR0"
-	endKey := "CAR99"
+	startKey := "Student0"
+	endKey := "Student99"
 
 	resultsIterator, err := ctx.GetStub().GetStateByRange(startKey, endKey)
 
@@ -129,7 +127,7 @@ func (s *SmartContract) ChangeCarOwner(ctx contractapi.TransactionContextInterfa
 		return err
 	}
 
-	car.Owner = newOwner
+	car.Mark = newOwner
 
 	carAsBytes, _ := json.Marshal(car)
 
