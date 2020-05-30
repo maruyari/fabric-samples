@@ -32,7 +32,7 @@ type QueryResult struct {
 // InitLedger adds a base set of cars to the ledger
 func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
 	cars := []Car{
-		Car{Name: "John", Year: "2018", Board: "CBSE", Mark: "99"},
+		Car{Name: "changed", Year: "2018", Board: "CBSE", Mark: "99"},
 		Car{Name: "jane", Year: "2017", Board: "ICSE", Mark: "92"},
 		Car{Name: "Tan", Year: "2018", Board: "CBSE", Mark: "85"},
 		Car{Name: "jon", Year: "2018", Board: "ICSE",Mark: "86"},
