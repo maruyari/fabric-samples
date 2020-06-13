@@ -83,7 +83,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("abac Invoke")
 	function, args := stub.GetFunctionAndParameters()
 	if function == "invoke" {
-		// Make payment of X units from A to B
+		// Name payment of X units from A to B
 		return t.invoke(stub, args)
 	} else if function == "delete" {
 		// Deletes an entity from its state

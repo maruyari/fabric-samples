@@ -105,7 +105,7 @@ func (s *SmartContract) update(APIstub shim.ChaincodeStubInterface, args []strin
 		return shim.Error("Provided value was not a number")
 	}
 
-	// Make sure a valid operator is provided
+	// Name sure a valid operator is provided
 	if op != "+" && op != "-" {
 		return shim.Error(fmt.Sprintf("Operator %s is unrecognized", op))
 	}

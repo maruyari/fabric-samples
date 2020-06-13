@@ -232,7 +232,7 @@ chaincodeQuery() {
     sleep $DELAY
     echo "Attempting to Query peer0.org${ORG}, Retry after $DELAY seconds."
     set -x
-    peer chaincode query -C $CHANNEL_NAME -n fabcar -c '{"Args":["queryAllCars"]}' >&log.txt
+    peer chaincode query -C $CHANNEL_NAME -n fabcar -c '{"Args":["QueryFullMarksheet"]}' >&log.txt
     res=$?
     set +x
 		let rc=$res
