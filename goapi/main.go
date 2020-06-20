@@ -7,12 +7,6 @@ import (
 	"os/exec"
 )
 
-type Records struct {
-	name  string
-	year  string
-	board string
-	mark  string
-}
 
 func find(c *gin.Context) {
 	roll := c.Param("rollno")
@@ -46,10 +40,14 @@ func all(c *gin.Context) {
 	c.JSON(http.StatusOK,  string(output))
 }
 func add(c *gin.Context) {
-	name:=c.Param()
-	//todo
+	name:=c.Param("name")
+	roll:=c.Param("rollno")
+	year:=c.Param("year")
+	board:=c.Param("board")
+	mark:=c.Param("mark")
 
-	output, err := exec.Command("./Add.sh", name, year,board, mark, roll ).Output()
+
+	output, err := exec.Command("./add.sh",name, year, board, mark, roll).Output()
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"err": err})
@@ -59,7 +57,7 @@ func add(c *gin.Context) {
 func main() {
 	r := gin.Default()
 	r.GET("/modify/:rollno/:marks", modify)
-	//r.POST("/add",add)
+	r.GET("/add/:name/:year/:board/:mark/:rollno",add)
 	r.GET("/find/:rollno", find)
 	r.GET("/all", all)
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
