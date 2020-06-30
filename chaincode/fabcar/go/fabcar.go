@@ -8,12 +8,12 @@ import (
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
-// SmartContract provides functions for managing a car
+// SmartContract provides functions for managing a student
 type SmartContract struct {
 	contractapi.Contract
 }
 
-// Student describes basic details of what makes up a car
+// Student describes basic details of what makes up a student
 type Student struct {
 	Name  string `json:"name"`
 	Year  string `json:"year"`
@@ -28,10 +28,10 @@ type QueryResult struct {
 	Record *Student
 }
 
-// InitLedger adds a base set of cars to the ledger
+// InitLedger adds a base set of students to the ledger
 func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
 	students := []Student{
-		{Name: "sdhkfh", Year: "2018", Board: "CBSE", Mark: "99", Roll: "290319087"},
+		{Name: "Sarkaar", Year: "2018", Board: "CBSE", Mark: "99", Roll: "290319087"},
 		{Name: "jane", Year: "2017", Board: "ICSE", Mark: "92", Roll: "290393087"},
 		{Name: "Tan", Year: "2018", Board: "CBSE", Mark: "85", Roll: "2903914087"},
 		{Name: "jon", Year: "2018", Board: "ICSE", Mark: "86", Roll: "290329087"},
@@ -55,9 +55,11 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 	return nil
 }
 
-// CreateMarksheet adds a new car to the world state with given details
-func (s *SmartContract) CreateMarksheet(ctx contractapi.TransactionContextInterface, StudNumber string, name string, year string, board string, mark string, rollno string) error {
-	car := Student{
+var I = 11
+
+// CreateMarksheet adds a new student to the world state with given details
+func (s *SmartContract) CreateMarksheet(ctx contractapi.TransactionContextInterface, name string, year string, board string, mark string, rollno string) error {
+	stud := Student{
 		Name:  name,
 		Year:  year,
 		Board: board,
@@ -65,12 +67,14 @@ func (s *SmartContract) CreateMarksheet(ctx contractapi.TransactionContextInterf
 		Roll:  rollno,
 	}
 
-	carAsBytes, _ := json.Marshal(car)
+	studAsBytes, _ := json.Marshal(stud)
+	studnum := "Student" + strconv.Itoa(I)
+	I++
+	return ctx.GetStub().PutState(studnum, studAsBytes)
 
-	return ctx.GetStub().PutState(StudNumber, carAsBytes)
 }
 
-// QueryMarksheet returns the car stored in the world state with given id
+// QueryMarksheet returns the student stored in the world state with given id
 func (s *SmartContract) QueryMarksheet(ctx contractapi.TransactionContextInterface, rollno string) ([]QueryResult, error) {
 
 	startKey := "Student0"
@@ -105,7 +109,7 @@ func (s *SmartContract) QueryMarksheet(ctx contractapi.TransactionContextInterfa
 	return results, nil
 }
 
-// QueryFullMarksheet returns all cars found in world state
+// QueryFullMarksheet returns all students found in world state
 func (s *SmartContract) QueryFullMarksheet(ctx contractapi.TransactionContextInterface) ([]QueryResult, error) {
 	startKey := "Student0"
 	endKey := "Student99"
